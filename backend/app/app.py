@@ -139,6 +139,4 @@ def add_card():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all() # create database tables if they don't exist
-    for route in app.url_map.iter_rules():
-        print(route)
     app.run(debug=True)
