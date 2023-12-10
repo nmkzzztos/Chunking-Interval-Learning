@@ -28,6 +28,7 @@
 import axios from 'axios';
 import { Options, Vue } from 'vue-class-component';
 import AppButton from '@/components/AppButton.vue';
+import { useStore } from 'vuex';
 
 @Options({
   name: 'LoginView',
@@ -40,7 +41,17 @@ export default class LoginView extends Vue {
   password = '';
 
   async login() {
-    // TODO: implement login
+    try {
+      const response = await axios.post('http://localhost:5000/login', {
+        username: this.username,
+        password: this.password,
+      });
+      console.log(response.data);
+      useStore().commit('setUser', response.data.user);
+      this.$router.push('/');
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 </script>
