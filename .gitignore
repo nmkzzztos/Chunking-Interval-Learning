@@ -1,11 +1,13 @@
 .DS_Store
 node_modules
 /dist
-/pycache
+**/env/
+**/__pycache__/
 
 # local env files
 .env.local
 .env.*.local
+.env/
 
 # Log files
 npm-debug.log*
@@ -17,6 +19,7 @@ pnpm-debug.log*
 .idea
 .vscode
 .prettierrc
+.pyc
 *.suo
 *.ntvs*
 *.njsproj

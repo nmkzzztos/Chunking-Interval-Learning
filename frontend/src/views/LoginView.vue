@@ -28,7 +28,7 @@
 import axios from 'axios';
 import { Options, Vue } from 'vue-class-component';
 import AppButton from '@/components/AppButton.vue';
-import { useStore } from 'vuex';
+import store from '@/store';
 
 @Options({
   name: 'LoginView',
@@ -37,6 +37,8 @@ import { useStore } from 'vuex';
   },
 })
 export default class LoginView extends Vue {
+  store = store;
+
   username = '';
   password = '';
 
@@ -46,8 +48,7 @@ export default class LoginView extends Vue {
         username: this.username,
         password: this.password,
       });
-      console.log(response.data);
-      useStore().commit('setUser', response.data.user);
+      this.store.commit('setUser', response.data.user);
       this.$router.push('/');
     } catch (error) {
       console.log(error);

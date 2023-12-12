@@ -50,12 +50,11 @@ export default class LoginView extends Vue {
 
   async register() {
     try {
-      const response = await axios.post('http://localhost:5000/register', {
+      await axios.post('http://localhost:5000/register', {
         username: this.username,
         password: this.password,
       });
-      localStorage.setItem('token', response.data.token);
-      this.$router.push('/');
+      this.$router.push('/login');
     } catch (error) {
       console.log(error);
     }

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import store from '@/store';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -39,7 +40,10 @@ const router = createRouter({
 });
 
 function isAuthenticated() {
-  return localStorage.getItem('authToken') !== null;
+  if (store === undefined) {
+    return false;
+  }
+  return store.getters['user/user'] !== null;
 }
 
 router.beforeEach(async (to, from, next) => {
