@@ -1,14 +1,24 @@
 <template>
   <div v-if="link">
     <router-link :to="link" class="link">
-      <button class="btn" :style="style" @click="$emit('event')">
+      <button
+        :class="btn_class"
+        :style="style"
+        :disabled="disabled"
+        @click="$emit('event')"
+      >
         <img v-if="returnBtn" src="../assets/return.svg" alt="" class="image" />
         <div v-if="text" class="text">{{ text }}</div>
       </button>
     </router-link>
   </div>
   <div v-else>
-    <button class="btn" :style="style" @click="$emit('event')">
+    <button
+      :class="btn_class"
+      :style="style"
+      :disabled="disabled"
+      @click="$emit('event')"
+    >
       <img v-if="imagePath" :src="imagePath" alt="" />
       <div v-if="text" class="text">{{ text }}</div>
     </button>
@@ -45,6 +55,11 @@ import { Options, Vue } from 'vue-class-component';
       default: false,
       required: false,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   emits: ['event'],
 })
@@ -55,13 +70,20 @@ export default class AppButton extends Vue {
   public backgroundColor!: string;
   public link!: string;
   public returnBtn!: boolean;
+  public disabled!: boolean;
 
   get style() {
     return {
       width: `${this.width}px`,
       height: `${this.height}px`,
-      backgroundColor: this.backgroundColor,
     };
+  }
+
+  get btn_class() {
+    if (this.disabled) {
+      return 'btn-disabled';
+    }
+    return 'btn';
   }
 
   public imagePath() {
@@ -102,6 +124,24 @@ export default class AppButton extends Vue {
 
   transform: translate(-8px, -8px);
   box-shadow: 8px 8px #000000;
+}
+
+.btn-disabled {
+  padding: 10px 20px;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+
+  background-color: #c7c7c7;
+  border: 3px solid #000000;
+  border-radius: 30px;
+  color: #000000;
+  cursor: not-allowed;
+
+  transition: all 0.3s ease;
 }
 
 .image {

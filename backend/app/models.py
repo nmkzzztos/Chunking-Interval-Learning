@@ -4,25 +4,6 @@ from uuid import uuid4
 from time import time
 
 
-class Label(db.Model):
-    """
-    A label for a card
-
-    Attributes:
-        id: A unique identifier for the label
-        name: The name of the label
-        card_id: The id of the card that the label belongs to
-    """
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    card_id = db.Column(db.Integer, db.ForeignKey("card.id"), nullable=False)
-
-    def __init__(self, name):
-        self.id = uuid4()
-        self.name = name
-
-
 class Card(db.Model):
     """
     A flashcard
@@ -39,11 +20,15 @@ class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     front = db.Column(db.String(50))
     back = db.Column(db.String(50))
+    labels = db.Column(db.Text)
+    next_review = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
-    def __init__(self, front, back, user_id):
+    def __init__(self, front, back, labels, next_review, user_id):
         self.front = front
         self.back = back
+        self.labels = labels
+        self.next_review = next_review
         self.user_id = user_id
 
 

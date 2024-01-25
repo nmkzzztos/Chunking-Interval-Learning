@@ -1,6 +1,10 @@
+import os
+import http.client
+import datetime
+
 from flask import request, jsonify
 from app import app, db
-from models import User, Card, Label
+from models import User, Card
 
 
 @app.route("/login", methods=["POST"])
@@ -71,22 +75,53 @@ def add_card():
 
     Returns:
         A JSON response containing a message indicating whether or not the card was added successfully
-        >>> app.post('/cards', json={
-        ...     "front": "test",
-        ...     "back": "test",
-        ...     "labels": ["test"]
-        ... })
-        <Response streamed [201 CREATED]>
     """
     front = request.json.get("front")
     back = request.json.get("back")
+    labels = request.json.get("labels")
     username = request.json.get("username")
 
-    user = User.query.filter_by(name=username).first()
-    user_id = user.id
+    if not all([front, back, labels, username]):
+        return jsonify({"message": "Missing data"}), 400
 
-    card = Card(front, back, user_id)
+    user = User.query.filter_by(name=username).first()
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    next_review = datetime.datetime.now()
+
+    card = Card(front, back, ",".join(labels), next_review, user.id)
     db.session.add(card)
     db.session.commit()
 
     return jsonify({"message": "Card created successfully"}), 201
+
+
+@app.route("/translate", methods=["GET"])
+def translate():
+    text = request.args.get("text")
+    langpair = request.args.get("langpair")
+
+    if not text or not langpair:
+        return jsonify({"message": "Missing text or langpair"}), 400
+
+    conn = http.client.HTTPSConnection(
+        "translated-mymemory---translation-memory.p.rapidapi.com"
+    )
+
+    headers = {
+        "X-RapidAPI-Key": os.environ.get("RAPIDAPI_KEY"),
+        "X-RapidAPI-Host": "translated-mymemory---translation-memory.p.rapidapi.com",
+    }
+
+    try:
+        conn.request(
+            "GET",
+            f"/get?langpair={langpair}&q={text}&mt=1&onlyprivate=0&de=a%40b.c",
+            headers=headers,
+        )
+        res = conn.getresponse()
+        data = res.read()
+        return jsonify({"translation": data.decode("utf-8")}), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
