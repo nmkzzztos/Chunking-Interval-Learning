@@ -20,6 +20,9 @@
           >Sign up</router-link
         >
       </p>
+      <p v-if="userNotFound" class="text-below error">
+        User not found. Please try again.
+      </p>
     </form>
   </div>
 </template>
@@ -28,7 +31,7 @@
 import axios from 'axios';
 import { Options, Vue } from 'vue-class-component';
 import AppButton from '@/components/AppButton.vue';
-import store from '@/store';
+import { useStore } from 'vuex';
 
 @Options({
   name: 'LoginView',
@@ -37,10 +40,11 @@ import store from '@/store';
   },
 })
 export default class LoginView extends Vue {
-  store = store;
+  store = useStore();
 
   username = '';
   password = '';
+  userNotFound = false;
 
   async login() {
     try {
@@ -49,9 +53,10 @@ export default class LoginView extends Vue {
         password: this.password,
       });
       this.store.commit('setUser', response.data.user);
+      this.store.commit('setCards', response.data.cards);
       this.$router.push('/');
     } catch (error) {
-      console.log(error);
+      this.userNotFound = true;
     }
   }
 }
@@ -93,5 +98,11 @@ export default class LoginView extends Vue {
 
 .link:hover {
   color: #000000;
+}
+
+.error {
+  color: #ff0000;
+  position: absolute;
+  top: 75%;
 }
 </style>

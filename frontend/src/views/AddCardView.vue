@@ -28,6 +28,7 @@
 import axios from 'axios';
 import { Options, Vue } from 'vue-class-component';
 import AppButton from '@/components/AppButton.vue';
+import { useStore } from 'vuex';
 
 @Options({
   name: 'AddCardView',
@@ -40,7 +41,9 @@ export default class AddCardView extends Vue {
   back = '';
   labels = '';
 
-  get isFormValid() {
+  store = useStore();
+
+  get isFormValid(): string {
     return this.front && this.back;
   }
 
@@ -51,12 +54,11 @@ export default class AddCardView extends Vue {
 
   async addCard() {
     try {
-      console.log(this.convert_labels());
       const response = await axios.post('http://localhost:5000/cards', {
         front: this.front,
         back: this.back,
         labels: this.convert_labels(),
-        username: 'test',
+        username: this.store.state.user['user'],
       });
       console.log(response.data);
     } catch (error) {

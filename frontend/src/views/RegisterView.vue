@@ -28,14 +28,18 @@
           >Login</router-link
         >
       </p>
+      <p v-if="userAlreadyExists" class="text-below error">
+        User already exists. Please try again.
+      </p>
     </form>
   </div>
 </template>
 
 <script lang="ts" scoped>
-import axios from 'axios';
+import axios, { Axios } from 'axios';
 import { Options, Vue } from 'vue-class-component';
 import AppButton from '@/components/AppButton.vue';
+import { watch } from 'vue';
 
 @Options({
   name: 'LoginView',
@@ -47,6 +51,7 @@ export default class LoginView extends Vue {
   username = '';
   password = '';
   confirmPassword = '';
+  userAlreadyExists = false;
 
   async register() {
     try {
@@ -55,8 +60,11 @@ export default class LoginView extends Vue {
         password: this.password,
       });
       this.$router.push('/login');
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      if (error.response.status === 409) {
+        this.userAlreadyExists = true;
+      }
     }
   }
 
@@ -107,5 +115,11 @@ export default class LoginView extends Vue {
 
 .input-error {
   border: 2px solid #a50000;
+}
+
+.error {
+  color: #ff0000;
+  position: absolute;
+  top: 80%;
 }
 </style>

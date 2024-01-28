@@ -23,6 +23,7 @@ class Card(db.Model):
     labels = db.Column(db.Text)
     next_review = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    repeat_count = db.Column(db.Integer, default=0)
 
     def __init__(self, front, back, labels, next_review, user_id):
         self.front = front

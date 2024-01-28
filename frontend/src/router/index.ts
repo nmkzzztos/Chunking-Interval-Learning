@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import store from '@/store';
+import { useStore } from 'vuex';
+
+const store = useStore();
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -23,9 +25,9 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/AddCardView.vue'),
   },
   {
-    path: '/edit-card',
-    name: 'edit-card',
-    component: () => import('../views/EditCardView.vue'),
+    path: '/delete-card',
+    name: 'delete-card',
+    component: () => import('../views/DeleteCardView.vue'),
   },
   {
     path: '/settings',
@@ -40,10 +42,7 @@ const router = createRouter({
 });
 
 function isAuthenticated() {
-  if (store === undefined) {
-    return false;
-  }
-  return store.getters['user/user'] !== null;
+  return !store;
 }
 
 router.beforeEach(async (to, from, next) => {

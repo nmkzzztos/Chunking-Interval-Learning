@@ -3,8 +3,8 @@
   <ProgressBar :progress="progress" :studied="10" :to-review="40"></ProgressBar>
   <div class="buttons-container">
     <AppButton text="Add Card" link="add-card" />
-    <AppButton text="Edit Card" link="edit-card" />
-    <AppButton text="Settings" link="settings" />
+    <AppButton text="Delete Card" link="delete-card" />
+    <AppButton text="Logout" @event="logout" />
   </div>
 </template>
 
@@ -12,6 +12,8 @@
 import { Options, Vue } from 'vue-class-component';
 import AppButton from '@/components/AppButton.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
+import { useStore } from 'vuex';
+import { onMounted } from 'vue';
 
 @Options({
   name: 'MainView',
@@ -21,7 +23,15 @@ import ProgressBar from '@/components/ProgressBar.vue';
   },
 })
 export default class MainView extends Vue {
+  store = useStore();
+
   public progress = 20;
+
+  logout() {
+    this.store.commit('setUser', null);
+    this.store.commit('setCards', []);
+    this.$router.push('/login');
+  }
 }
 </script>
 
