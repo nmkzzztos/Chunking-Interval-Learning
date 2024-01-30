@@ -10,16 +10,11 @@ const state: UserState = {
 
 const getters = {
   user: (state: UserState) => state.user,
-  cards: (state: UserState) => state.user?.cards,
 };
 
 const mutations = {
-  setUser: (state: UserState, user: User) => (state.user = user),
-  setCards: (state: UserState, cards: User['cards']) => {
-    console.log('setCards', cards);
-    if (state.user) {
-      console.log(state.user);
-    }
+  setUser: (state: UserState, user: User) => {
+    state.user = user;
   },
 };
 

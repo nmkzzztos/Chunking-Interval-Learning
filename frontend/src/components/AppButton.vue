@@ -88,7 +88,6 @@ export default class AppButton extends Vue {
 
   public imagePath() {
     if (this.returnBtn) {
-      console.log(this.imagePath);
       return '../assets/return.svg';
     }
     return '';

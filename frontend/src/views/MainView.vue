@@ -9,11 +9,11 @@
 </template>
 
 <script lang="ts" scoped>
+import { onBeforeMount } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 import AppButton from '@/components/AppButton.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import { useStore } from 'vuex';
-import { onMounted } from 'vue';
 
 @Options({
   name: 'MainView',
@@ -27,10 +27,41 @@ export default class MainView extends Vue {
 
   public progress = 20;
 
+  learnedCards = 0;
+
+  get cards() {
+    return this.store.state.cards;
+  }
+
+  get user() {
+    return this.store.state.user;
+  }
+
+  get cardsToReview() {
+    return this.cards.cards.filter((card: any) => {
+      console.log(new Date(card.next_review).getTime());
+      return new Date(card.next_review).getTime() < new Date().getTime();
+    });
+  }
+
+  beforeMount(): void {
+    if (
+      !this.store.getters.user &&
+      localStorage.getItem('isLogged') === 'true'
+    ) {
+      this.store.commit('setUser', localStorage.getItem('user'));
+      this.store.commit('setCards', {
+        cards: JSON.parse(localStorage.getItem('cards') || ''),
+        username: localStorage.getItem('user'),
+      });
+    }
+  }
+
   logout() {
     this.store.commit('setUser', null);
-    this.store.commit('setCards', []);
+    this.store.commit('deleteAllCards');
     this.$router.push('/login');
+    localStorage.setItem('isLogged', 'false');
   }
 }
 </script>

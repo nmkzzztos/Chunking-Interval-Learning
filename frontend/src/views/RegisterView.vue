@@ -36,10 +36,9 @@
 </template>
 
 <script lang="ts" scoped>
-import axios, { Axios } from 'axios';
+import axios from 'axios';
 import { Options, Vue } from 'vue-class-component';
 import AppButton from '@/components/AppButton.vue';
-import { watch } from 'vue';
 
 @Options({
   name: 'LoginView',

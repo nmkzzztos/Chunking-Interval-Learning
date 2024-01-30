@@ -42,13 +42,14 @@ const router = createRouter({
 });
 
 function isAuthenticated() {
-  return !store;
+  if (localStorage.getItem('isLogged') === 'false') {
+    return false;
+  }
+  return true;
 }
 
 router.beforeEach(async (to, from, next) => {
-  if (to.name === 'login' || to.name === 'register') {
-    next();
-  } else if (!isAuthenticated()) {
+  if (!isAuthenticated() && to.name !== 'login') {
     next({ name: 'login' });
   } else {
     next();

@@ -27,8 +27,9 @@ def login():
         return jsonify({"message": "Invalid username or password"}), 401
     cards = Card.query.filter_by(user=user).all()
     cards_to_response = {}
-    for card in cards:
-        cards_to_response[card.front] = {
+    for id, card in enumerate(cards):
+        cards_to_response[id] = {
+            "front": card.front,
             "back": card.back,
             "labels": card.labels,
             "next_review": card.next_review,
@@ -99,17 +100,21 @@ def add_card():
     back = request.json.get("back")
     labels = request.json.get("labels")
     username = request.json.get("username")
+    next_review = request.json.get("next_review")
+    
+    labels = "".join(labels)
 
-    if not all([front, back, labels, username]):
+    if not all([front, back, labels, username, next_review]):
         return jsonify({"message": "Missing data"}), 400
 
     user = User.query.filter_by(name=username).first()
     if not user:
         return jsonify({"message": "User not found"}), 404
 
-    next_review = datetime.datetime.now()
+    card = Card(
+        user_id=user.id, front=front, back=back, labels=labels, next_review=next_review
+    )
 
-    card = Card(front, back, labels.split(",").join(" "), next_review, user.id)
     db.session.add(card)
     db.session.commit()
 

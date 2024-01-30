@@ -46,14 +46,32 @@ export default class LoginView extends Vue {
   password = '';
   userNotFound = false;
 
+  setLocalStorage(name: string, cards: string) {
+    localStorage.setItem('isLogged', 'true');
+    if (localStorage.getItem('user') !== name) {
+      localStorage.setItem('user', name);
+    }
+    if (localStorage.getItem('cards') !== JSON.stringify(cards)) {
+      localStorage.setItem('cards', JSON.stringify(cards));
+    }
+  }
+
+  setStore(name: string, cards: string) {
+    this.store.commit('setUser', name);
+    this.store.commit('setCards', {
+      cards: cards,
+      username: name,
+    });
+  }
+
   async login() {
     try {
       const response = await axios.post('http://localhost:5000/login', {
         username: this.username,
         password: this.password,
       });
-      this.store.commit('setUser', response.data.user);
-      this.store.commit('setCards', response.data.cards);
+      this.setStore(response.data.user, response.data.cards);
+      this.setLocalStorage(response.data.user, response.data.cards);
       this.$router.push('/');
     } catch (error) {
       this.userNotFound = true;

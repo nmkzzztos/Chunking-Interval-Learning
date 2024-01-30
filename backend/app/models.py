@@ -21,7 +21,7 @@ class Card(db.Model):
     front = db.Column(db.String(50))
     back = db.Column(db.String(50))
     labels = db.Column(db.Text)
-    next_review = db.Column(db.DateTime)
+    next_review = db.Column(db.String(50))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     repeat_count = db.Column(db.Integer, default=0)
 

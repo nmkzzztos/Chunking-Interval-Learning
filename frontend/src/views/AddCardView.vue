@@ -47,20 +47,38 @@ export default class AddCardView extends Vue {
     return this.front && this.back;
   }
 
-  convert_labels() {
+  get cards() {
+    return this.store.state.cards;
+  }
+
+  private convert_labels() {
     const reg_exp = /[\s,.]+/g;
     return this.labels.split(reg_exp).join(' ');
   }
 
   async addCard() {
     try {
-      const response = await axios.post('http://localhost:5000/cards', {
-        front: this.front,
-        back: this.back,
-        labels: this.convert_labels(),
-        username: this.store.state.user['user'],
+      const front = this.front;
+      const back = this.back;
+      const labels = this.convert_labels();
+      const username = this.store.state.user['user'];
+      const next_review = new Date().toISOString();
+
+      await axios.post('http://localhost:5000/cards', {
+        front,
+        back,
+        labels,
+        username,
+        next_review,
       });
-      console.log(response.data);
+      this.store.commit('addCard', {
+        front,
+        back,
+        labels,
+        username,
+        next_review,
+        repeat_count: 0,
+      });
     } catch (error) {
       console.log(error);
     }

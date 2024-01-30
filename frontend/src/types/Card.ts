@@ -1,9 +1,8 @@
 export interface Card {
-  id: number;
   front: string;
   back: string;
-  labels: string[];
-  next_review: number;
-  user_id: number;
+  labels: string;
+  next_review: string;
+  user_name: string;
   repeat_count: number;
 }
