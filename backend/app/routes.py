@@ -1,6 +1,5 @@
 import os
 import http.client
-import datetime
 
 from flask import request, jsonify
 from app import app, db
@@ -29,6 +28,7 @@ def login():
     cards_to_response = {}
     for id, card in enumerate(cards):
         cards_to_response[id] = {
+            "card_id": card.id,
             "front": card.front,
             "back": card.back,
             "labels": card.labels,
@@ -101,7 +101,7 @@ def add_card():
     labels = request.json.get("labels")
     username = request.json.get("username")
     next_review = request.json.get("next_review")
-    
+
     labels = "".join(labels)
 
     if not all([front, back, labels, username, next_review]):
@@ -119,6 +119,75 @@ def add_card():
     db.session.commit()
 
     return jsonify({"message": "Card created successfully"}), 201
+
+
+@app.route("/cards", methods=["DELETE"])
+def delete_card():
+    """
+    Deletes a card from the database
+
+    Returns:
+        A JSON response containing a message indicating whether or not the card was deleted successfully
+        >>> app.put('/cards', json={
+        ...     "front": "test",
+        ...     "username": "test"
+        ... })
+        <Response streamed [200 OK]>
+    """
+    card_id = request.json.get("card_id")
+    username = request.json.get("username")
+
+    if not all([card_id, username]):
+        return jsonify({"message": "Missing data"}), 400
+
+    user = User.query.filter_by(name=username).first()
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    card = Card.query.filter_by(user_id=user.id, id=card_id).first()
+    if not card:
+        return jsonify({"message": "Card not found"}), 404
+
+    db.session.delete(card)
+    db.session.commit()
+
+    return jsonify({"message": "Card deleted successfully"}), 200
+
+
+@app.route("/cards", methods=["PUT"])
+def updateCard():
+    """
+    Updates a card in the database
+
+    Returns:
+        A JSON response containing a message indicating whether or not the card was updated successfully
+        >>> app.put('/cards', json={
+        ...     "front": "test",
+        ...     "username": "test"
+        ... })
+        <Response streamed [200 OK]>
+    """
+    card_id = request.json.get("card_id")
+    username = request.json.get("username")
+    next_review = request.json.get("next_review")
+    repeat_count = request.json.get("repeat_count")
+
+    if not all([card_id, username, next_review, repeat_count]):
+        return jsonify({"message": "Missing data"}), 400
+
+    user = User.query.filter_by(name=username).first()
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    card = Card.query.filter_by(user_id=user.id, id=card_id).first()
+    if not card:
+        return jsonify({"message": "Card not found"}), 404
+
+    card.next_review = next_review
+    card.repeat_count = repeat_count
+    db.session.commit()
+
+    return jsonify({"message": "Card updated successfully"}), 200
 
 
 @app.route("/translate", methods=["GET"])

@@ -1,10 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask import request, jsonify
 from flask_cors import CORS
-from werkzeug.security import generate_password_hash, check_password_hash
-from uuid import uuid4
-from time import time
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3' # use relative filepath for sqlite
