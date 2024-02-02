@@ -19,7 +19,7 @@ python -m venv env
     
 Activate virtual evironment
 ```sh
-venv/scripts/activate
+env/scripts/activate
 ```
 
 ### Dependencies
