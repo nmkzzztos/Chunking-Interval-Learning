@@ -1,4 +1,5 @@
 export interface Card {
+  card_id: number;
   front: string;
   back: string;
   labels: string;

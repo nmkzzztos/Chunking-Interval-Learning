@@ -7,19 +7,14 @@
     <div class="content">
       <router-view />
     </div>
-    <footer class="card-info">
+    <footer class="footer">
       <AppButton
         v-show="showReturnButton"
-        class="return-to-home-button"
         width="50"
         height="40"
         link="/"
         :returnBtn="true"
       ></AppButton>
-      <div v-show="showCardInfo" class="card-info">
-        <p>Added Cards: 78</p>
-        <p>Learned Cards: 19</p>
-      </div>
     </footer>
   </div>
 </template>
@@ -27,12 +22,15 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import AppButton from '@/components/AppButton.vue';
+import { useStore } from 'vuex';
 
 @Options({
   name: 'App',
   components: { AppButton },
 })
 export default class App extends Vue {
+  store = useStore();
+
   get showReturnButton() {
     if (
       this.$route.path === '/' ||
@@ -44,11 +42,17 @@ export default class App extends Vue {
     return true;
   }
 
-  get showCardInfo() {
-    if (this.$route.path === '/login' || this.$route.path === '/register') {
-      return false;
+  beforeMount(): void {
+    if (
+      !this.store.getters.user &&
+      localStorage.getItem('isLogged') === 'true'
+    ) {
+      this.store.commit('setUser', localStorage.getItem('user'));
+      this.store.commit('setCards', {
+        cards: JSON.parse(localStorage.getItem('cards') || ''),
+        username: localStorage.getItem('user'),
+      });
     }
-    return true;
   }
 }
 </script>
@@ -123,19 +127,11 @@ header {
   justify-content: space-evenly;
 }
 
-.card-info {
+.footer {
   height: 10%;
-  width: 100%;
   display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-}
-
-.return-to-home-button {
-  position: absolute;
-
-  transform: translateY(-40px);
+  justify-content: center;
 }
 
 @media screen and (max-width: 450px) {

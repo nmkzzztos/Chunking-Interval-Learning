@@ -1,6 +1,15 @@
 <template>
-  <AppButton text="GO" width="50" height="50" />
-  <ProgressBar :progress="progress" :studied="10" :to-review="40"></ProgressBar>
+  <div v-if="cardsToReview.length === 0" class="no-cards">
+    <AppButton text="GO" width="50" height="50" disabled="true" />
+  </div>
+  <div v-else>
+    <AppButton text="GO" width="50" height="50" link="study" />
+  </div>
+  <ProgressBar
+    :progress="progress"
+    :studied="cards.cards.length - cardsToReview.length"
+    :to-review="cardsToReview.length"
+  ></ProgressBar>
   <div class="buttons-container">
     <AppButton text="Add Card" link="add-card" />
     <AppButton text="Delete Card" link="delete-card" />
@@ -9,7 +18,7 @@
 </template>
 
 <script lang="ts" scoped>
-import { onBeforeMount } from 'vue';
+import { Card } from '@/types/Card';
 import { Options, Vue } from 'vue-class-component';
 import AppButton from '@/components/AppButton.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
@@ -25,9 +34,14 @@ import { useStore } from 'vuex';
 export default class MainView extends Vue {
   store = useStore();
 
-  public progress = 20;
-
-  learnedCards = 0;
+  // Calculate progress based on number of cards studied and total number of cards
+  get progress() {
+    return (
+      ((this.cards.cards.length - this.cardsToReview.length) /
+        this.cards.cards.length) *
+      100
+    );
+  }
 
   get cards() {
     return this.store.state.cards;
@@ -37,26 +51,14 @@ export default class MainView extends Vue {
     return this.store.state.user;
   }
 
+  // Get cards that need to be reviewed (next_review date is in the past)
   get cardsToReview() {
-    return this.cards.cards.filter((card: any) => {
-      console.log(new Date(card.next_review).getTime());
+    return this.cards.cards.filter((card: Card) => {
       return new Date(card.next_review).getTime() < new Date().getTime();
     });
   }
 
-  beforeMount(): void {
-    if (
-      !this.store.getters.user &&
-      localStorage.getItem('isLogged') === 'true'
-    ) {
-      this.store.commit('setUser', localStorage.getItem('user'));
-      this.store.commit('setCards', {
-        cards: JSON.parse(localStorage.getItem('cards') || ''),
-        username: localStorage.getItem('user'),
-      });
-    }
-  }
-
+  // Delete user from store and local storage and redirect to login page
   logout() {
     this.store.commit('setUser', null);
     this.store.commit('deleteAllCards');

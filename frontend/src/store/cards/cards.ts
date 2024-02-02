@@ -15,6 +15,7 @@ const getters = {
 const mutations = {
   addCard: (state: CardsState, card: Card) => {
     state.cards.push(card);
+    localStorage.setItem('cards', JSON.stringify(state.cards));
   },
   setCards: (
     state: CardsState,
@@ -22,6 +23,7 @@ const mutations = {
   ) => {
     for (const value of Object.values(payload.cards)) {
       const card: Card = {
+        card_id: value.card_id,
         front: value.front,
         back: value.back,
         labels: value.labels,
@@ -32,8 +34,26 @@ const mutations = {
       state.cards.push(card);
     }
   },
+  deleteCard: (state: CardsState, card_id: number) => {
+    state.cards = state.cards.filter((card) => card.card_id !== card_id);
+    localStorage.setItem('cards', JSON.stringify(state.cards));
+  },
   deleteAllCards: (state: CardsState) => {
     state.cards = [];
+    localStorage.setItem('cards', JSON.stringify(state.cards));
+  },
+  updateCard: (
+    state: CardsState,
+    payload: { card_id: number; repeat_count: number; next_review: string }
+  ) => {
+    state.cards.forEach((card) => {
+      if (card.card_id === payload.card_id) {
+        card.repeat_count = payload.repeat_count;
+        card.next_review = payload.next_review;
+        return;
+      }
+    });
+    localStorage.setItem('cards', JSON.stringify(state.cards));
   },
 };
 

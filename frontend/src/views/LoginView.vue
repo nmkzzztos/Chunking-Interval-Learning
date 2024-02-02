@@ -46,6 +46,7 @@ export default class LoginView extends Vue {
   password = '';
   userNotFound = false;
 
+  // Check if form is valid (username and password are not empty) and user and cards to local storage
   setLocalStorage(name: string, cards: string) {
     localStorage.setItem('isLogged', 'true');
     if (localStorage.getItem('user') !== name) {
@@ -56,6 +57,7 @@ export default class LoginView extends Vue {
     }
   }
 
+  // Set user and cards in store
   setStore(name: string, cards: string) {
     this.store.commit('setUser', name);
     this.store.commit('setCards', {
@@ -64,6 +66,7 @@ export default class LoginView extends Vue {
     });
   }
 
+  // Login user and redirect to main page if successful
   async login() {
     try {
       const response = await axios.post('http://localhost:5000/login', {

@@ -52,6 +52,12 @@ export default class LoginView extends Vue {
   confirmPassword = '';
   userAlreadyExists = false;
 
+  // Check if password and confirm password are the same
+  get validatePassword() {
+    return this.password === this.confirmPassword;
+  }
+
+  // Check if form is valid (username and password are not empty) and add user to database
   async register() {
     try {
       await axios.post('http://localhost:5000/register', {
@@ -65,10 +71,6 @@ export default class LoginView extends Vue {
         this.userAlreadyExists = true;
       }
     }
-  }
-
-  get validatePassword() {
-    return this.password === this.confirmPassword;
   }
 }
 </script>

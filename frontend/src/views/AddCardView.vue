@@ -43,6 +43,7 @@ export default class AddCardView extends Vue {
 
   store = useStore();
 
+  // Check if form is valid (front and back are not empty)
   get isFormValid(): string {
     return this.front && this.back;
   }
@@ -51,13 +52,17 @@ export default class AddCardView extends Vue {
     return this.store.state.cards;
   }
 
+  // Convert labels to lowercase and remove special characters
   private convert_labels() {
     const reg_exp = /[\s,.]+/g;
     return this.labels.split(reg_exp).join(' ');
   }
 
+  // Add card to database and store and redirect to main page
   async addCard() {
     try {
+      const card_id =
+        this.cards.cards.length === 0 ? 1 : this.cards.cards.length + 1;
       const front = this.front;
       const back = this.back;
       const labels = this.convert_labels();
@@ -65,6 +70,7 @@ export default class AddCardView extends Vue {
       const next_review = new Date().toISOString();
 
       await axios.post('http://localhost:5000/cards', {
+        card_id,
         front,
         back,
         labels,
@@ -72,6 +78,7 @@ export default class AddCardView extends Vue {
         next_review,
       });
       this.store.commit('addCard', {
+        card_id,
         front,
         back,
         labels,
@@ -79,6 +86,7 @@ export default class AddCardView extends Vue {
         next_review,
         repeat_count: 0,
       });
+      (this.front = ''), (this.back = ''), (this.labels = '');
     } catch (error) {
       console.log(error);
     }

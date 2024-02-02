@@ -7,7 +7,7 @@
         :disabled="disabled"
         @click="$emit('event')"
       >
-        <img v-if="returnBtn" src="../assets/return.svg" alt="" class="image" />
+        <img v-if="returnBtn" src="../assets/home.svg" alt="" class="image" />
         <div v-if="text" class="text">{{ text }}</div>
       </button>
     </router-link>
@@ -138,7 +138,7 @@ export default class AppButton extends Vue {
   border: 3px solid #000000;
   border-radius: 30px;
   color: #000000;
-  cursor: not-allowed;
+  cursor: default;
 
   transition: all 0.3s ease;
 }

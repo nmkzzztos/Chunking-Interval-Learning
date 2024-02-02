@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import { useStore } from 'vuex';
 
@@ -30,6 +31,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/DeleteCardView.vue'),
   },
   {
+    path:'/study',
+    name:'study',
+    component: () => import('../views/StudyView.vue'),
+  },
+  {
     path: '/settings',
     name: 'settings',
     component: () => import('../views/SettingsView.vue'),
@@ -49,8 +55,8 @@ function isAuthenticated() {
 }
 
 router.beforeEach(async (to, from, next) => {
-  if (!isAuthenticated() && to.name !== 'login') {
-    next({ name: 'login' });
+  if (!isAuthenticated() && (to.name !== 'login' && to.name !== 'register')) {
+    next({ name: to.name === 'register' ? 'register' : 'login' });
   } else {
     next();
   }
