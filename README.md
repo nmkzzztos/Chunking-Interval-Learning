@@ -48,3 +48,10 @@ After installing all necessary dependencies:
 
 ### Usage
 Once both the backend and frontend are up and running, you can begin your language learning journey with Chunking Interval Learning. Create your own flashcards, start learning sessions, and track your progress through the application's interface.
+
+### Contact
+
+Anton Guliaev
+[Mail](nmkzzztos@gmail.com)
+[GitHub](https://github.com/nmkzzztos)
+[LinkedIn](https://www.linkedin.com/in/nmkzzztos/)
