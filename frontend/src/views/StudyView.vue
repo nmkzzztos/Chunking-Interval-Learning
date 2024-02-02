@@ -42,6 +42,7 @@ export default class StudyView extends Vue {
     return this.store.state.cards.cards;
   }
 
+  // Get labels and count of cards with that label
   get labels(): { [key: string]: number } {
     const labels: { [key: string]: number } = {};
     for (const card of this.cards) {
@@ -54,6 +55,7 @@ export default class StudyView extends Vue {
     return labels;
   }
 
+  // Group cards by label and return array of cards
   get groupedCards(): Card[] {
     const groupedCards: [Card[]] = [[]];
     for (const label in this.labels) {
@@ -105,8 +107,8 @@ export default class StudyView extends Vue {
     }
   }
 
+  // Update card with next review date and repeat count and redirect to main page if last card
   markKnown(known: boolean) {
-    // Update the next review date based on the number of times the card has been repeated 1 = 1 hour, 2 = 8 hours, 3 = 24 hours, 4 = 3 days
     const updateBasedOnRepeat: { [key: number]: number } = {
       0: 1,
       1: 8,

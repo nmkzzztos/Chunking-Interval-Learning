@@ -36,11 +36,15 @@ After installing all necessary dependencies:
     ```
 * Or run them yourself
     1. Start the Backend Server:
-    Navigate to the `backend` folder.
-    Follow the instructions in the `backend/README.md` to start the server.
+    Navigate to the `backend` folder and run the following command to start the server:
+    ```bash
+    python app/app.py
+    ```
     2. Launch the Frontend Application:
-    Open a new terminal window and navigate to the `frontend` folder.
-    Follow the steps in the `frontend/README.md` to start the frontend application.
+    Open a new terminal window and navigate to the `frontend` folder to start the frontend application:
+    ```bash
+    npm run serve
+    ```
 
 ### Usage
 Once both the backend and frontend are up and running, you can begin your language learning journey with Chunking Interval Learning. Create your own flashcards, start learning sessions, and track your progress through the application's interface.
