@@ -14,7 +14,7 @@ To set up a virtual environment, follow these steps:
 
 Create vurtial environment
 ```sh
-python -m venv venv
+python -m venv env
 ```
     
 Activate virtual evironment
